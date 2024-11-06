@@ -83,6 +83,8 @@ install_base_system() {
   echo "==> Installing base system..."
   pacstrap -K /mnt base base-devel linux linux-firmware dhcpcd openssh sudo vi /
     atool /
+    docker /
+    docker-compose /
     lsof /
     man-db /
     neovim /
@@ -104,6 +106,7 @@ install_base_system() {
     fi
   fi
   arch_chroot "systemctl enable sshd.service"
+  arch_chroot "systemctl enable docker.service"
   echo ""
   sleep 1
 }
@@ -179,7 +182,7 @@ install_bootloader() {
 
 create_user() {
   echo "==> Creating user ${username}..."
-  arch_chroot "useradd -m ${username}"
+  arch_chroot "useradd -m -G docker ${username}"
   arch_chroot "echo '${username}:${userpw}' | chpasswd"
   sleep 1
 }
